@@ -14,7 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      milk_bookings: {
+        Row: {
+          address: string
+          created_at: string
+          customer_name: string
+          id: string
+          message: string | null
+          phone: string
+          preferred_time: string
+          quantity: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          customer_name: string
+          id?: string
+          message?: string | null
+          phone: string
+          preferred_time: string
+          quantity: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          customer_name?: string
+          id?: string
+          message?: string | null
+          phone?: string
+          preferred_time?: string
+          quantity?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
