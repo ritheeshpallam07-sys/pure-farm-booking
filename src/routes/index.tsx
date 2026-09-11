@@ -159,7 +159,7 @@ function HeroSection() {
     <section className="section-padding">
       <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div className="order-2 lg:order-1">
-          <p className="mb-3 text-sm font-medium uppercase tracking-wider text-primary">
+          <p className="mb-3 text-sm font-medium tracking-wider text-primary">
             {brandName}
           </p>
           <h1 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
