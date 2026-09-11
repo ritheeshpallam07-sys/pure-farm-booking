@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useRef } from "react";
 import heroMilk from "@/assets/hero-milk.jpg";
 import { supabase } from "@/integrations/supabase/client";
