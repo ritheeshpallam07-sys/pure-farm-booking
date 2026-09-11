@@ -80,12 +80,20 @@ function Header({
           ))}
         </nav>
 
-        <a
-          href="#book-milk"
-          className="hidden rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 md:inline-flex"
-        >
-          Book Milk
-        </a>
+        <div className="hidden items-center gap-3 md:flex">
+          <Link
+            to="/auth"
+            className="rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-all hover:bg-muted"
+          >
+            Owner Login
+          </Link>
+          <a
+            href="#book-milk"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90"
+          >
+            Book Milk
+          </a>
+        </div>
 
         <button
           type="button"
