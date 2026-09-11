@@ -195,7 +195,7 @@ function HeroSection() {
               width={1344}
               height={896}
               className="h-auto w-full object-cover"
-              priority="true"
+              loading="eager"
             />
           </div>
         </div>
