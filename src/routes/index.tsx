@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef } from "react";
 import heroMilk from "@/assets/hero-milk.jpg";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -333,6 +334,8 @@ function HowItWorksSection() {
 
 function BookingSection() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -349,11 +352,23 @@ function BookingSection() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Connect to backend or database here.
-    // For now, the booking is handled on the frontend and shown as confirmed.
-    console.log("Booking submitted:", formData);
+    setSubmitting(true);
+    setSubmitError("");
+    const { error } = await supabase.from("milk_bookings").insert({
+      customer_name: formData.name.trim(),
+      phone: formData.phone.trim(),
+      address: formData.address.trim(),
+      quantity: formData.quantity,
+      preferred_time: formData.time,
+      message: formData.message.trim() || null,
+    });
+    setSubmitting(false);
+    if (error) {
+      setSubmitError("We couldn't save your booking. Please try again.");
+      return;
+    }
     setSubmitted(true);
   };
 
@@ -517,15 +532,13 @@ function BookingSection() {
 
               <button
                 type="submit"
-                className="w-full rounded-full bg-primary px-6 py-3.5 text-base font-medium text-primary-foreground transition-all hover:bg-primary/90"
+                disabled={submitting}
+                className="w-full rounded-full bg-primary px-6 py-3.5 text-base font-medium text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-60"
               >
-                Book Milk
+                {submitting ? "Saving booking…" : "Book Milk"}
               </button>
 
-              <p className="text-center text-xs text-muted-foreground">
-                This form is currently frontend-only. Connect a backend or database here
-                when ready.
-              </p>
+              {submitError && <p role="alert" className="text-center text-sm text-destructive">{submitError}</p>}
             </form>
           )}
         </div>
@@ -576,6 +589,7 @@ function Footer() {
         <p className="mt-6 text-xs text-muted-foreground">
           © {new Date().getFullYear()} {brandName}. All rights reserved.
         </p>
+        <a href="/bookings" className="mt-4 inline-block text-xs text-muted-foreground hover:text-foreground">Owner access</a>
       </div>
     </footer>
   );
