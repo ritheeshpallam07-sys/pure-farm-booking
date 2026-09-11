@@ -139,6 +139,13 @@ function Header({
                 {link.label}
               </a>
             ))}
+            <Link
+              to="/auth"
+              onClick={() => setMenuOpen(false)}
+              className="inline-flex w-full justify-center rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-all hover:bg-muted"
+            >
+              Owner Login
+            </Link>
             <a
               href="#book-milk"
               onClick={() => setMenuOpen(false)}
