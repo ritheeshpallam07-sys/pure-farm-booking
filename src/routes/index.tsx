@@ -1,22 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef } from "react";
-import heroMilk from "@/assets/hero-milk.jpg";
+import farmHero from "@/assets/farm-hero.jpg.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "rp — raw & pure | Fresh Organic Milk" },
+      { title: "rp — raw & pure | Fresh Farm Milk" },
       {
         name: "description",
         content:
-          "Fresh organic milk sourced directly from cows and delivered fresh to your doorstep. Book your daily milk with rp — raw & pure.",
+          "Fresh, natural milk collected from our cows and delivered to your doorstep by rp — raw & pure.",
       },
-      { property: "og:title", content: "rp — raw & pure | Fresh Organic Milk" },
+      { property: "og:title", content: "rp — raw & pure | Fresh Farm Milk" },
       {
         property: "og:description",
         content:
-          "Fresh organic milk sourced directly from cows and delivered fresh to your doorstep.",
+          "Fresh, natural milk collected from our cows and delivered to your doorstep.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -62,9 +62,9 @@ function Header({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <a href="#" className="text-lg font-semibold tracking-tight text-foreground">
+        <a href="#" className="text-lg font-semibold text-foreground">
           {brandName}
         </a>
 
@@ -159,18 +159,26 @@ function HeroSection() {
   };
 
   return (
-    <section className="section-padding">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <div className="order-2 lg:order-1">
-          <p className="mb-3 text-sm font-medium tracking-wider text-primary">
+    <section className="relative flex min-h-[76vh] items-end overflow-hidden sm:min-h-[78vh]">
+      <img
+        src={farmHero.url}
+        alt="Healthy cows beside a small dairy shed in a green farm field"
+        width={1536}
+        height={1024}
+        className="absolute inset-0 h-full w-full object-cover object-center"
+        loading="eager"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/45 to-transparent" />
+      <div className="relative mx-auto w-full max-w-6xl px-4 pb-14 pt-28 sm:px-6 sm:pb-20 lg:px-8">
+        <div className="max-w-2xl">
+           <p className="mb-4 text-sm font-semibold text-primary-foreground">
             {brandName}
           </p>
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            Fresh. Pure. Straight from the Cow.
+           <h1 className="text-4xl font-semibold leading-tight text-primary-foreground sm:text-5xl lg:text-6xl">
+             Fresh milk. Straight from our farm.
           </h1>
-          <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted-foreground">
-            Fresh organic milk, sourced directly from cows and served fresh to your
-            doorstep.
+           <p className="mt-5 max-w-xl text-lg leading-relaxed text-primary-foreground/90 sm:text-xl">
+             Fresh, natural milk collected from our cows and delivered to your doorstep.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <button
@@ -178,28 +186,15 @@ function HeroSection() {
               onClick={scrollToBooking}
               className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3.5 text-base font-medium text-primary-foreground transition-all hover:bg-primary/90"
             >
-              Book Milk
+              Book Fresh Milk
             </button>
             <button
               type="button"
               onClick={scrollToAbout}
-              className="inline-flex items-center justify-center rounded-full border border-border bg-card px-8 py-3.5 text-base font-medium text-foreground transition-all hover:bg-muted"
+              className="inline-flex items-center justify-center rounded-full border border-primary-foreground/70 bg-background/10 px-8 py-3.5 text-base font-medium text-primary-foreground backdrop-blur-sm transition-all hover:bg-background/20"
             >
               Learn More
             </button>
-          </div>
-        </div>
-
-        <div className="order-1 lg:order-2">
-          <div className="overflow-hidden rounded-3xl bg-cream shadow-sm">
-            <img
-              src={heroMilk}
-              alt="Fresh organic milk in a glass bottle with green leaves"
-              width={1344}
-              height={896}
-              className="h-auto w-full object-cover"
-              loading="eager"
-            />
           </div>
         </div>
       </div>
@@ -211,17 +206,15 @@ function AboutSection() {
   return (
     <section id="about" className="section-padding bg-cream">
       <div className="mx-auto max-w-3xl text-center">
-        <p className="mb-3 text-sm font-medium uppercase tracking-wider text-primary">
+        <p className="mb-3 text-sm font-medium uppercase text-earth">
           About us
         </p>
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+        <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
           Pure milk. Nothing complicated.
         </h2>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-          {brandName} focuses on providing fresh milk directly from cows to customers,
-          with an emphasis on natural freshness and quality. We keep things simple:
-          no unnecessary processing, no long supply chains — just honest milk from
-          healthy cows delivered to you.
+          Fresh milk from our cows, handled with care and delivered to your home. We
+          believe good milk should be simple, fresh, and natural.
         </p>
       </div>
     </section>
@@ -231,23 +224,23 @@ function AboutSection() {
 function WhyChooseUsSection() {
   const cards = [
     {
-      title: "Direct from cows",
-      description: "Our milk comes straight from the cow, keeping the journey short and transparent.",
+      title: "From our cows",
+      description: "Fresh milk collected directly from our cows.",
       icon: CowIcon,
     },
     {
       title: "Fresh & natural",
-      description: "We prioritise freshness and natural quality in every delivery.",
+      description: "Simple, fresh milk without unnecessary complexity.",
       icon: LeafIcon,
     },
     {
-      title: "Quality focused",
-      description: "Clean handling and careful collection help us maintain the quality you expect.",
+      title: "Carefully handled",
+      description: "Milk is collected and handled with care.",
       icon: DropletIcon,
     },
     {
-      title: "Delivered to customers",
-      description: "Fresh milk brought conveniently to your doorstep, so you never run out.",
+      title: "Delivered to you",
+      description: "Fresh milk delivered conveniently to your doorstep.",
       icon: TruckIcon,
     },
   ];
@@ -256,11 +249,11 @@ function WhyChooseUsSection() {
     <section id="why-us" className="section-padding">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 text-center">
-          <p className="mb-3 text-sm font-medium uppercase tracking-wider text-primary">
+          <p className="mb-3 text-sm font-medium uppercase text-earth">
             Why choose us
           </p>
-          <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Milk the way it should be
+          <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
+            Naturally simple, from farm to home
           </h2>
         </div>
 
@@ -268,7 +261,7 @@ function WhyChooseUsSection() {
           {cards.map((card) => (
             <div
               key={card.title}
-              className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:shadow-md"
+              className="rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40"
             >
               <div className="mb-4 inline-flex rounded-xl bg-accent p-3 text-primary">
                 <card.icon className="h-6 w-6" />
@@ -289,18 +282,18 @@ function HowItWorksSection() {
   const steps = [
     {
       step: "01",
-      title: "Milk is collected fresh",
-      description: "Each day, milk is collected with care from healthy cows.",
+      title: "Milk is collected",
+      description: "Fresh milk is collected from our cows.",
     },
     {
       step: "02",
-      title: "Quality is maintained",
-      description: "We handle and store the milk cleanly to preserve its freshness.",
+      title: "We prepare it",
+      description: "Milk is handled carefully to maintain freshness.",
     },
     {
       step: "03",
-      title: "Customer receives the milk",
-      description: "Your milk is delivered fresh to your doorstep at your preferred time.",
+      title: "You receive it",
+      description: "Your fresh milk is delivered to your doorstep.",
     },
   ];
 
@@ -308,10 +301,10 @@ function HowItWorksSection() {
     <section id="how-it-works" className="section-padding bg-cream">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 text-center">
-          <p className="mb-3 text-sm font-medium uppercase tracking-wider text-primary">
+          <p className="mb-3 text-sm font-medium uppercase text-earth">
             How it works
           </p>
-          <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
             From farm to you in three simple steps
           </h2>
         </div>
@@ -319,7 +312,7 @@ function HowItWorksSection() {
         <div className="grid gap-8 md:grid-cols-3">
           {steps.map((item) => (
             <div key={item.step} className="relative text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary text-xl font-semibold text-primary-foreground">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-background text-xl font-semibold text-primary">
                 {item.step}
               </div>
               <h3 className="mt-6 text-lg font-semibold text-foreground">{item.title}</h3>
@@ -390,18 +383,18 @@ function BookingSection() {
     <section id="book-milk" className="section-padding">
       <div className="mx-auto max-w-2xl">
         <div className="mb-10 text-center">
-          <p className="mb-3 text-sm font-medium uppercase tracking-wider text-primary">
-            Book your milk
+          <p className="mb-3 text-sm font-medium uppercase text-earth">
+            Fresh from the farm
           </p>
-          <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Book fresh milk today
+          <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
+            Book Fresh Milk
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Fill in your details below and we will get in touch with you shortly.
+            Tell us what you need and we’ll take care of the rest.
           </p>
         </div>
 
-        <div className="rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8">
+        <div className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
           {submitted ? (
             <div className="py-10 text-center">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -537,7 +530,7 @@ function BookingSection() {
                 disabled={submitting}
                 className="w-full rounded-full bg-primary px-6 py-3.5 text-base font-medium text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-60"
               >
-                {submitting ? "Saving booking…" : "Book Milk"}
+                 {submitting ? "Saving booking…" : "Book Fresh Milk"}
               </button>
 
               {submitError && <p role="alert" className="text-center text-sm text-destructive">{submitError}</p>}
@@ -553,15 +546,15 @@ function ContactSection() {
   return (
     <section id="contact" className="section-padding bg-cream">
       <div className="mx-auto max-w-3xl text-center">
-        <p className="mb-3 text-sm font-medium uppercase tracking-wider text-primary">
+        <p className="mb-3 text-sm font-medium uppercase text-earth">
           Contact
         </p>
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          Get in touch
+        <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
+          {brandName}
         </h2>
+        <p className="mt-3 text-lg text-muted-foreground">Fresh milk, straight from our farm to your home.</p>
 
-        <div className="mt-8 rounded-2xl border border-border bg-card p-8 shadow-sm">
-          <p className="text-lg font-semibold text-foreground">{brandName}</p>
+        <div className="mt-8 rounded-xl border border-border bg-card p-8 shadow-sm">
           <p className="mt-4 text-muted-foreground">
             Phone / WhatsApp: <span className="text-foreground">[placeholder]</span>
           </p>
@@ -586,12 +579,11 @@ function Footer() {
       <div className="mx-auto max-w-6xl text-center">
         <p className="text-sm font-medium text-foreground">{brandName}</p>
         <p className="mt-2 text-xs text-muted-foreground">
-          Fresh organic milk, straight from the cow to your doorstep.
+          Fresh milk, straight from our farm to your home.
         </p>
         <p className="mt-6 text-xs text-muted-foreground">
           © {new Date().getFullYear()} {brandName}. All rights reserved.
         </p>
-        <a href="/bookings" className="mt-4 inline-block text-xs text-muted-foreground hover:text-foreground">Owner access</a>
       </div>
     </footer>
   );

@@ -35,6 +35,8 @@
   --color-leaf-foreground: var(--leaf-foreground);
   --color-cream: var(--cream);
   --color-cream-dark: var(--cream-dark);
+  --color-earth: var(--earth);
+  --color-earth-foreground: var(--earth-foreground);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -51,30 +53,32 @@
 }
 
 :root {
-  --radius: 0.875rem;
-  --background: oklch(0.985 0.01 95);
-  --foreground: oklch(0.25 0.03 95);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.25 0.03 95);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.25 0.03 95);
-  --primary: oklch(0.55 0.14 145);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.96 0.02 100);
-  --secondary-foreground: oklch(0.35 0.04 100);
-  --muted: oklch(0.95 0.015 100);
-  --muted-foreground: oklch(0.55 0.04 100);
-  --accent: oklch(0.94 0.03 130);
-  --accent-foreground: oklch(0.3 0.05 130);
+  --radius: 0.75rem;
+  --background: oklch(0.985 0.012 92);
+  --foreground: oklch(0.27 0.035 80);
+  --card: oklch(0.995 0.008 92);
+  --card-foreground: oklch(0.27 0.035 80);
+  --popover: oklch(0.995 0.008 92);
+  --popover-foreground: oklch(0.27 0.035 80);
+  --primary: oklch(0.43 0.095 138);
+  --primary-foreground: oklch(0.98 0.012 92);
+  --secondary: oklch(0.92 0.035 82);
+  --secondary-foreground: oklch(0.34 0.055 71);
+  --muted: oklch(0.95 0.018 91);
+  --muted-foreground: oklch(0.5 0.04 79);
+  --accent: oklch(0.92 0.045 132);
+  --accent-foreground: oklch(0.32 0.075 135);
   --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(0.98 0.01 25);
-  --border: oklch(0.88 0.02 100);
-  --input: oklch(0.9 0.015 100);
-  --ring: oklch(0.55 0.14 145);
-  --leaf: oklch(0.55 0.14 145);
-  --leaf-foreground: oklch(1 0 0);
-  --cream: oklch(0.98 0.015 95);
-  --cream-dark: oklch(0.93 0.025 95);
+  --border: oklch(0.87 0.025 86);
+  --input: oklch(0.88 0.024 86);
+  --ring: oklch(0.43 0.095 138);
+  --leaf: oklch(0.43 0.095 138);
+  --leaf-foreground: oklch(0.98 0.012 92);
+  --cream: oklch(0.96 0.025 88);
+  --cream-dark: oklch(0.91 0.04 84);
+  --earth: oklch(0.48 0.08 58);
+  --earth-foreground: oklch(0.98 0.012 92);
   --chart-1: oklch(0.55 0.14 145);
   --chart-2: oklch(0.65 0.12 85);
   --chart-3: oklch(0.75 0.1 70);
@@ -98,6 +102,15 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: Georgia, "Times New Roman", serif;
+    letter-spacing: 0;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font-family: Arial, Helvetica, sans-serif;
   }
 
   html {
