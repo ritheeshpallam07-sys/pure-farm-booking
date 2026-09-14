@@ -102,15 +102,13 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: Arial, Helvetica, sans-serif;
     letter-spacing: 0;
   }
 
-  button,
-  input,
-  select,
-  textarea {
-    font-family: Arial, Helvetica, sans-serif;
+  h1,
+  h2 {
+    font-family: Georgia, "Times New Roman", serif;
   }
 
   html {

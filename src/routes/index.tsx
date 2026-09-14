@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import farmHero from "@/assets/farm-hero.jpg.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -168,7 +168,7 @@ function HeroSection() {
         className="absolute inset-0 h-full w-full object-cover object-center"
         loading="eager"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/45 to-transparent" />
+      <div className="absolute inset-0 bg-foreground/55" />
       <div className="relative mx-auto w-full max-w-6xl px-4 pb-14 pt-28 sm:px-6 sm:pb-20 lg:px-8">
         <div className="max-w-2xl">
            <p className="mb-4 text-sm font-semibold text-primary-foreground">
