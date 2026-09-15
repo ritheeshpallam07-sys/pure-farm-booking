@@ -668,6 +668,63 @@ function DropletIcon({ className }: { className?: string }) {
   );
 }
 
+function BottleIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 3h6" />
+      <path d="M10 3v4l-2 3v9a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-9l-2-3V3" />
+      <path d="M8 12h8" />
+    </svg>
+  );
+}
+
+function HomeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m3 11 9-7 9 7" />
+      <path d="M5 10v10h14V10" />
+      <path d="M9 20v-6h6v6" />
+    </svg>
+  );
+}
+
+function LeafSprig({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M18 86C42 68 52 42 62 12" />
+      <path d="M38 64C24 61 20 51 20 42c13 1 21 8 18 22Z" />
+      <path d="M50 43c-9-10-6-21 0-28 9 8 11 18 0 28Z" />
+      <path d="M57 29c10-8 21-5 27 2-9 8-19 9-27-2Z" />
+      <path d="M31 74c-11-2-19 4-22 11 10 4 18 1 22-11Z" />
+    </svg>
+  );
+}
+
 function TruckIcon({ className }: { className?: string }) {
   return (
     <svg
