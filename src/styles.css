@@ -37,6 +37,9 @@
   --color-cream-dark: var(--cream-dark);
   --color-earth: var(--earth);
   --color-earth-foreground: var(--earth-foreground);
+  --color-sage: var(--sage);
+  --color-sage-foreground: var(--sage-foreground);
+  --color-paper: var(--paper);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -79,6 +82,9 @@
   --cream-dark: oklch(0.91 0.04 84);
   --earth: oklch(0.48 0.08 58);
   --earth-foreground: oklch(0.98 0.012 92);
+  --sage: oklch(0.76 0.055 128);
+  --sage-foreground: oklch(0.29 0.06 135);
+  --paper: oklch(0.975 0.016 88);
   --chart-1: oklch(0.55 0.14 145);
   --chart-2: oklch(0.65 0.12 85);
   --chart-3: oklch(0.75 0.1 70);
@@ -113,6 +119,48 @@
 
   html {
     scroll-behavior: smooth;
+  }
+}
+
+@keyframes section-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  .paper-texture {
+    background-image:
+      radial-gradient(circle at 20% 30%, color-mix(in oklab, var(--earth) 5%, transparent) 0 0.7px, transparent 0.8px),
+      radial-gradient(circle at 75% 65%, color-mix(in oklab, var(--primary) 4%, transparent) 0 0.6px, transparent 0.7px);
+    background-size: 18px 18px, 23px 23px;
+  }
+
+  .section-reveal {
+    animation: section-reveal 700ms ease-out both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 22%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .section-reveal {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
   }
 }
 
