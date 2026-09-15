@@ -35,6 +35,7 @@ function Index() {
       <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <main>
         <HeroSection />
+        <FarmJourney />
         <AboutSection />
         <WhyChooseUsSection />
         <HowItWorksSection />
@@ -153,47 +154,35 @@ function HeroSection() {
     element?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const scrollToAbout = () => {
-    const element = document.getElementById("about");
-    element?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    <section className="relative flex min-h-[76vh] items-end overflow-hidden sm:min-h-[78vh]">
+    <section className="relative flex min-h-[80vh] items-end overflow-hidden sm:min-h-[82vh]">
       <img
         src={farmHero.url}
         alt="Healthy cows beside a small dairy shed in a green farm field"
         width={1536}
         height={1024}
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="absolute inset-0 h-full w-full scale-[1.01] object-cover object-[58%_center] transition-transform duration-[1600ms] hover:scale-[1.02] sm:object-center"
         loading="eager"
       />
-      <div className="absolute inset-0 bg-foreground/55" />
-      <div className="relative mx-auto w-full max-w-6xl px-4 pb-14 pt-28 sm:px-6 sm:pb-20 lg:px-8">
+      <div className="absolute inset-0 bg-foreground/50" />
+      <div className="relative mx-auto w-full max-w-6xl px-4 pb-16 pt-32 sm:px-6 sm:pb-24 lg:px-8">
         <div className="max-w-2xl">
-           <p className="mb-4 text-sm font-semibold text-primary-foreground">
+           <p className="mb-5 text-sm font-semibold text-primary-foreground">
             {brandName}
           </p>
            <h1 className="text-4xl font-semibold leading-tight text-primary-foreground sm:text-5xl lg:text-6xl">
-             Fresh milk. Straight from our farm.
+              Fresh milk.<br />Straight from our farm.
           </h1>
            <p className="mt-5 max-w-xl text-lg leading-relaxed text-primary-foreground/90 sm:text-xl">
-             Fresh, natural milk collected from our cows and delivered to your doorstep.
+              Pure, fresh milk collected from our cows and delivered to your doorstep.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          <div className="mt-8">
             <button
               type="button"
               onClick={scrollToBooking}
-              className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3.5 text-base font-medium text-primary-foreground transition-all hover:bg-primary/90"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3.5 text-base font-medium text-primary-foreground shadow-lg transition-colors hover:bg-primary/90"
             >
               Book Fresh Milk
-            </button>
-            <button
-              type="button"
-              onClick={scrollToAbout}
-              className="inline-flex items-center justify-center rounded-full border border-primary-foreground/70 bg-background/10 px-8 py-3.5 text-base font-medium text-primary-foreground backdrop-blur-sm transition-all hover:bg-background/20"
-            >
-              Learn More
             </button>
           </div>
         </div>
@@ -202,10 +191,42 @@ function HeroSection() {
   );
 }
 
+function FarmJourney() {
+  const items = [
+    { label: "From our cows", icon: CowIcon },
+    { label: "Fresh milk", icon: BottleIcon },
+    { label: "To your home", icon: HomeIcon },
+  ];
+
+  return (
+    <section aria-label="From our cows to your home" className="section-reveal paper-texture relative z-10 -mt-1 bg-paper px-4 py-9 sm:px-6 sm:py-11">
+      <div className="mx-auto grid max-w-3xl grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-2 sm:gap-6">
+        {items.map((item, index) => (
+          <div key={item.label} className="contents">
+            <div className="flex min-w-0 flex-col items-center text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-primary/20 bg-background text-primary shadow-sm sm:h-14 sm:w-14">
+                <item.icon className="h-6 w-6" />
+              </div>
+              <p className="mt-3 text-xs font-semibold text-foreground sm:text-sm">{item.label}</p>
+            </div>
+            {index < items.length - 1 && (
+              <svg aria-hidden="true" viewBox="0 0 44 12" className="h-3 w-7 text-earth/60 sm:w-11">
+                <path d="M1 6c9-5 18 5 28 0 3-1.5 6-1 10 0" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                <path d="m36 2 5 4-5 4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function AboutSection() {
   return (
-    <section id="about" className="section-padding bg-cream">
-      <div className="mx-auto max-w-3xl text-center">
+    <section id="about" className="section-reveal section-padding relative overflow-hidden bg-cream">
+      <LeafSprig className="absolute -left-5 top-9 h-24 w-24 rotate-12 text-sage/50" />
+      <div className="relative mx-auto max-w-3xl text-center">
         <p className="mb-3 text-sm font-medium uppercase text-earth">
           About us
         </p>
@@ -213,8 +234,7 @@ function AboutSection() {
           Pure milk. Nothing complicated.
         </h2>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-          Fresh milk from our cows, handled with care and delivered to your home. We
-          believe good milk should be simple, fresh, and natural.
+          Fresh milk from our cows, handled with care and delivered to your home.
         </p>
       </div>
     </section>
@@ -239,14 +259,14 @@ function WhyChooseUsSection() {
       icon: DropletIcon,
     },
     {
-      title: "Delivered to you",
-      description: "Fresh milk delivered conveniently to your doorstep.",
+      title: "Delivered to your home",
+      description: "Fresh milk delivered conveniently to your home.",
       icon: TruckIcon,
     },
   ];
 
   return (
-    <section id="why-us" className="section-padding">
+    <section id="why-us" className="section-reveal section-padding paper-texture">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 text-center">
           <p className="mb-3 text-sm font-medium uppercase text-earth">
@@ -261,7 +281,7 @@ function WhyChooseUsSection() {
           {cards.map((card) => (
             <div
               key={card.title}
-              className="rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40"
+              className="rounded-lg border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
             >
               <div className="mb-4 inline-flex rounded-xl bg-accent p-3 text-primary">
                 <card.icon className="h-6 w-6" />
@@ -282,30 +302,31 @@ function HowItWorksSection() {
   const steps = [
     {
       step: "01",
-      title: "Milk is collected",
+      title: "We collect",
       description: "Fresh milk is collected from our cows.",
     },
     {
       step: "02",
-      title: "We prepare it",
+      title: "We prepare",
       description: "Milk is handled carefully to maintain freshness.",
     },
     {
       step: "03",
-      title: "You receive it",
+      title: "We deliver",
       description: "Your fresh milk is delivered to your doorstep.",
     },
   ];
 
   return (
-    <section id="how-it-works" className="section-padding bg-cream">
-      <div className="mx-auto max-w-6xl">
+    <section id="how-it-works" className="section-reveal section-padding relative overflow-hidden rounded-t-[2.5rem] bg-cream sm:rounded-t-[4rem]">
+      <LeafSprig className="absolute -right-6 bottom-8 h-28 w-28 -rotate-12 text-sage/40" />
+      <div className="relative mx-auto max-w-6xl">
         <div className="mb-12 text-center">
           <p className="mb-3 text-sm font-medium uppercase text-earth">
             How it works
           </p>
           <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
-            From farm to you in three simple steps
+            Fresh milk, simply prepared and delivered
           </h2>
         </div>
 
@@ -380,7 +401,7 @@ function BookingSection() {
   };
 
   return (
-    <section id="book-milk" className="section-padding">
+    <section id="book-milk" className="section-reveal section-padding paper-texture">
       <div className="mx-auto max-w-2xl">
         <div className="mb-10 text-center">
           <p className="mb-3 text-sm font-medium uppercase text-earth">
@@ -390,11 +411,11 @@ function BookingSection() {
             Book Fresh Milk
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Tell us what you need and we’ll take care of the rest.
+            Choose your quantity and delivery time.
           </p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
+        <div className="rounded-xl border border-border bg-card p-6 shadow-lg sm:p-8">
           {submitted ? (
             <div className="py-10 text-center">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -544,7 +565,7 @@ function BookingSection() {
 
 function ContactSection() {
   return (
-    <section id="contact" className="section-padding bg-cream">
+    <section id="contact" className="section-reveal section-padding rounded-t-[2.5rem] bg-cream sm:rounded-t-[4rem]">
       <div className="mx-auto max-w-3xl text-center">
         <p className="mb-3 text-sm font-medium uppercase text-earth">
           Contact
@@ -554,7 +575,7 @@ function ContactSection() {
         </h2>
         <p className="mt-3 text-lg text-muted-foreground">Fresh milk, straight from our farm to your home.</p>
 
-        <div className="mt-8 rounded-xl border border-border bg-card p-8 shadow-sm">
+        <div className="mt-8 border-y border-border py-8">
           <p className="mt-4 text-muted-foreground">
             Phone / WhatsApp: <span className="text-foreground">[placeholder]</span>
           </p>
@@ -575,7 +596,7 @@ function ContactSection() {
 
 function Footer() {
   return (
-    <footer className="border-t border-border/60 px-4 py-8 sm:px-6 lg:px-8">
+    <footer className="paper-texture border-t border-border/60 px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl text-center">
         <p className="text-sm font-medium text-foreground">{brandName}</p>
         <p className="mt-2 text-xs text-muted-foreground">
