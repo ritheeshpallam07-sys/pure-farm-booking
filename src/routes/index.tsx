@@ -95,7 +95,6 @@ function HeroSection() {
     <section className="relative min-h-[92svh] overflow-hidden bg-foreground">
       <img src={farmHero.url} alt="Healthy cows in a peaceful green dairy farm at sunrise" width={1536} height={1024} loading="eager" className="hero-image-settle absolute inset-0 h-full w-full object-cover object-[61%_center] transition-transform duration-[1800ms] ease-out hover:scale-[1.012] sm:object-center" />
       <div className="absolute inset-0 bg-foreground/45" />
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-foreground/55 to-transparent" />
       <div className="relative mx-auto flex min-h-[92svh] max-w-7xl items-end px-5 pb-16 pt-28 sm:px-8 sm:pb-20 lg:px-12 lg:pb-24">
         <div className="max-w-3xl text-primary-foreground">
           <p className="hero-stage hero-stage-1 mb-5 text-xs font-semibold uppercase">{brandName}</p>
