@@ -72,7 +72,16 @@ function BookingsPage() {
                 </div>
                 <dl className="mt-4 grid gap-3 text-sm">
                   <div><dt className="text-muted-foreground">Phone</dt><dd className="font-medium text-foreground">{booking.phone}</dd></div>
-                  <div><dt className="text-muted-foreground">Address</dt><dd className="text-foreground">{booking.address}</dd></div>
+                  <div><dt className="text-muted-foreground">Delivery address</dt><dd className="text-foreground">{booking.address}</dd></div>
+                  {booking.latitude != null && booking.longitude != null ? (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div><dt className="text-muted-foreground">Location detected</dt><dd className="text-foreground">{booking.latitude.toFixed(6)}, {booking.longitude.toFixed(6)}</dd></div>
+                      <div><dt className="text-muted-foreground">GPS accuracy</dt><dd className="text-foreground">{booking.location_accuracy != null ? `±${Math.round(booking.location_accuracy)} m` : "Not available"}</dd></div>
+                      <div className="col-span-2"><a href={`https://www.google.com/maps/search/?api=1&query=${booking.latitude},${booking.longitude}`} target="_blank" rel="noopener noreferrer" className="inline-block rounded-full border border-border px-4 py-1.5 text-sm font-medium text-primary hover:bg-muted">Open location</a></div>
+                    </div>
+                  ) : (
+                    <div><dt className="text-muted-foreground">Location detected</dt><dd className="text-muted-foreground">Not shared (address typed manually)</dd></div>
+                  )}
                   <div className="grid grid-cols-2 gap-4">
                     <div><dt className="text-muted-foreground">Quantity</dt><dd className="text-foreground">{booking.quantity}</dd></div>
                     <div><dt className="text-muted-foreground">Delivery time</dt><dd className="capitalize text-foreground">{booking.preferred_time}</dd></div>

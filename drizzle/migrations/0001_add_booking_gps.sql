@@ -1,0 +1,1 @@
+ALTER TABLE public.milk_bookings ADD COLUMN latitude double precision, ADD COLUMN longitude double precision, ADD COLUMN location_accuracy double precision;
