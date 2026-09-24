@@ -205,6 +205,8 @@ function BookingSection() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [formData, setFormData] = useState({ name: "", phone: "", address: "", quantity: "", time: "", message: "" });
+  const [gps, setGps] = useState<Gps | null>(null);
+  const addressEdited = useRef(false);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     setFormData((previous) => ({ ...previous, [name]: value }));
@@ -213,12 +215,12 @@ function BookingSection() {
     event.preventDefault();
     setSubmitting(true);
     setSubmitError("");
-    const { error } = await supabase.from("milk_bookings").insert({ customer_name: formData.name.trim(), phone: formData.phone.trim(), address: formData.address.trim(), quantity: formData.quantity, preferred_time: formData.time, message: formData.message.trim() || null });
+    const { error } = await supabase.from("milk_bookings").insert({ customer_name: formData.name.trim(), phone: formData.phone.trim(), address: formData.address.trim(), quantity: formData.quantity, preferred_time: formData.time, message: formData.message.trim() || null, latitude: gps?.latitude ?? null, longitude: gps?.longitude ?? null, location_accuracy: gps?.accuracy ?? null });
     setSubmitting(false);
     if (error) { setSubmitError("We couldn't save your booking. Please try again."); return; }
     setSubmitted(true);
   };
-  const handleReset = () => { setFormData({ name: "", phone: "", address: "", quantity: "", time: "", message: "" }); setSubmitted(false); };
+  const handleReset = () => { setFormData({ name: "", phone: "", address: "", quantity: "", time: "", message: "" }); setGps(null); addressEdited.current = false; setSubmitted(false); };
   return (
     <section id="book-milk" className="reveal-once paper-texture relative bg-cream-dark px-5 py-24 sm:px-8 sm:py-32">
       <LeafSprig className="absolute -right-7 top-16 h-36 w-36 -rotate-12 text-primary/15" />
@@ -230,7 +232,7 @@ function BookingSection() {
             <form onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
               <Field label="Customer Name" id="name"><input id="name" name="name" type="text" required value={formData.name} onChange={handleChange} placeholder="Your full name" className="form-control" /></Field>
               <Field label="Phone Number" id="phone"><input id="phone" name="phone" type="tel" required value={formData.phone} onChange={handleChange} placeholder="Your phone number" className="form-control" /></Field>
-              <div className="sm:col-span-2"><Field label="Address" id="address"><input id="address" name="address" type="text" required value={formData.address} onChange={handleChange} placeholder="Your delivery address" className="form-control" /></Field><LocationButton onAddress={(address) => setFormData((previous) => ({ ...previous, address }))} /></div>
+              <div className="sm:col-span-2"><Field label="Address" id="address"><input id="address" name="address" type="text" required value={formData.address} onChange={(e) => { addressEdited.current = true; handleChange(e); }} placeholder="Your delivery address" className="form-control" /></Field><LocationButton onLocated={(g) => { setGps(g); addressEdited.current = false; }} onSuggestion={(address) => { if (!addressEdited.current) setFormData((previous) => ({ ...previous, address })); }} /></div>
               <Field label="Quantity of Milk" id="quantity"><select id="quantity" name="quantity" required value={formData.quantity} onChange={handleChange} className="form-control"><option value="">Select quantity</option><option value="500ml">500 ml</option><option value="1litre">1 litre</option><option value="2litres">2 litres</option><option value="5litres">5 litres</option><option value="other">Other</option></select></Field>
               <Field label="Preferred Delivery Time" id="time"><select id="time" name="time" required value={formData.time} onChange={handleChange} className="form-control"><option value="">Select time</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></Field>
               <div className="sm:col-span-2"><Field label="Optional Message" id="message"><textarea id="message" name="message" rows={3} value={formData.message} onChange={handleChange} placeholder="Any special instructions..." className="form-control resize-none" /></Field></div>
@@ -245,38 +247,48 @@ function BookingSection() {
 
 function Field({ label, id, children }: { label: string; id: string; children: React.ReactNode }) { return <label htmlFor={id} className="block"><span className="mb-2 block text-xs font-semibold uppercase text-earth">{label}</span>{children}</label>; }
 
-function LocationButton({ onAddress }: { onAddress: (address: string) => void }) {
+type Gps = { latitude: number; longitude: number; accuracy: number | null };
+
+function LocationButton({ onLocated, onSuggestion }: { onLocated: (gps: Gps) => void; onSuggestion: (address: string) => void }) {
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [note, setNote] = useState("");
+  const [lowAccuracy, setLowAccuracy] = useState(false);
   const locate = () => {
     if (!("geolocation" in navigator)) { setStatus("error"); setNote("Location isn't available on this device. Please type your address."); return; }
-    setStatus("loading"); setNote("");
+    setStatus("loading"); setNote(""); setLowAccuracy(false);
+    // One-time read only — no watchPosition, no continuous tracking.
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
+        const accuracy = Number.isFinite(coords.accuracy) ? coords.accuracy : null;
+        onLocated({ latitude: coords.latitude, longitude: coords.longitude, accuracy });
+        setLowAccuracy(accuracy !== null && accuracy > 100);
+        setStatus("done");
+        setNote("Please check this address and add your house/door number if needed.");
         try {
-          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}&addressdetails=1`, { headers: { Accept: "application/json" } });
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}&addressdetails=1&zoom=18`, { headers: { Accept: "application/json" } });
           if (!response.ok) throw new Error(String(response.status));
           const data: { display_name?: string } = await response.json();
-          if (!data.display_name) throw new Error("no address");
-          onAddress(data.display_name);
-          setStatus("done"); setNote("Address filled in — please check it and add house number or landmark if needed.");
+          if (data.display_name) onSuggestion(data.display_name);
+          else throw new Error("no address");
         } catch {
-          setStatus("error"); setNote("We couldn't find your address. Please type it in — your booking will still work.");
+          setNote("Location saved, but we couldn't suggest an address. Please type your address above.");
         }
       },
       (error) => {
         setStatus("error");
         setNote(error.code === error.PERMISSION_DENIED ? "No problem — location access was not allowed. Please type your address above." : "We couldn't get your location. Please type your address above.");
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 },
     );
   };
   return (
     <div className="mt-2.5">
       <button type="button" onClick={locate} disabled={status === "loading"} className="inline-flex items-center gap-2 rounded-full border border-sage bg-paper px-4 py-2 text-sm font-medium text-primary transition duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm active:translate-y-0 disabled:opacity-60">
-        <span aria-hidden="true">📍</span>{status === "loading" ? "Finding your location…" : "Use my current location"}
+        <span aria-hidden="true">{status === "done" ? "✓" : "📍"}</span>{status === "loading" ? "Finding your location…" : status === "done" ? "Location detected — please check your address" : "Use my current location"}
       </button>
-      {note && <p role="status" className={`mt-2 text-sm ${status === "error" ? "text-earth" : "text-muted-foreground"}`}>{note}</p>}
+      {status === "done" && <p role="status" className="mt-2 text-sm font-medium text-primary">Location detected. Please check your delivery address.</p>}
+      {lowAccuracy && <p role="alert" className="mt-1 text-sm text-earth">Your location accuracy is low. Please check the address before booking.</p>}
+      {note && <p role="status" className={`mt-1 text-sm ${status === "error" ? "text-earth" : "text-muted-foreground"}`}>{note}</p>}
     </div>
   );
 }
