@@ -230,7 +230,7 @@ function BookingSection() {
             <form onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
               <Field label="Customer Name" id="name"><input id="name" name="name" type="text" required value={formData.name} onChange={handleChange} placeholder="Your full name" className="form-control" /></Field>
               <Field label="Phone Number" id="phone"><input id="phone" name="phone" type="tel" required value={formData.phone} onChange={handleChange} placeholder="Your phone number" className="form-control" /></Field>
-              <div className="sm:col-span-2"><Field label="Address" id="address"><input id="address" name="address" type="text" required value={formData.address} onChange={handleChange} placeholder="Your delivery address" className="form-control" /></Field></div>
+              <div className="sm:col-span-2"><Field label="Address" id="address"><input id="address" name="address" type="text" required value={formData.address} onChange={handleChange} placeholder="Your delivery address" className="form-control" /></Field><LocationButton onAddress={(address) => setFormData((previous) => ({ ...previous, address }))} /></div>
               <Field label="Quantity of Milk" id="quantity"><select id="quantity" name="quantity" required value={formData.quantity} onChange={handleChange} className="form-control"><option value="">Select quantity</option><option value="500ml">500 ml</option><option value="1litre">1 litre</option><option value="2litres">2 litres</option><option value="5litres">5 litres</option><option value="other">Other</option></select></Field>
               <Field label="Preferred Delivery Time" id="time"><select id="time" name="time" required value={formData.time} onChange={handleChange} className="form-control"><option value="">Select time</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></Field>
               <div className="sm:col-span-2"><Field label="Optional Message" id="message"><textarea id="message" name="message" rows={3} value={formData.message} onChange={handleChange} placeholder="Any special instructions..." className="form-control resize-none" /></Field></div>
@@ -244,6 +244,42 @@ function BookingSection() {
 }
 
 function Field({ label, id, children }: { label: string; id: string; children: React.ReactNode }) { return <label htmlFor={id} className="block"><span className="mb-2 block text-xs font-semibold uppercase text-earth">{label}</span>{children}</label>; }
+
+function LocationButton({ onAddress }: { onAddress: (address: string) => void }) {
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [note, setNote] = useState("");
+  const locate = () => {
+    if (!("geolocation" in navigator)) { setStatus("error"); setNote("Location isn't available on this device. Please type your address."); return; }
+    setStatus("loading"); setNote("");
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}&addressdetails=1`, { headers: { Accept: "application/json" } });
+          if (!response.ok) throw new Error(String(response.status));
+          const data: { display_name?: string } = await response.json();
+          if (!data.display_name) throw new Error("no address");
+          onAddress(data.display_name);
+          setStatus("done"); setNote("Address filled in — please check it and add house number or landmark if needed.");
+        } catch {
+          setStatus("error"); setNote("We couldn't find your address. Please type it in — your booking will still work.");
+        }
+      },
+      (error) => {
+        setStatus("error");
+        setNote(error.code === error.PERMISSION_DENIED ? "No problem — location access was not allowed. Please type your address above." : "We couldn't get your location. Please type your address above.");
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
+    );
+  };
+  return (
+    <div className="mt-2.5">
+      <button type="button" onClick={locate} disabled={status === "loading"} className="inline-flex items-center gap-2 rounded-full border border-sage bg-paper px-4 py-2 text-sm font-medium text-primary transition duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm active:translate-y-0 disabled:opacity-60">
+        <span aria-hidden="true">📍</span>{status === "loading" ? "Finding your location…" : "Use my current location"}
+      </button>
+      {note && <p role="status" className={`mt-2 text-sm ${status === "error" ? "text-earth" : "text-muted-foreground"}`}>{note}</p>}
+    </div>
+  );
+}
 
 function ContactSection() {
   return <section id="contact" className="reveal-once bg-paper px-5 py-20 sm:px-8"><div className="mx-auto flex max-w-6xl flex-col justify-between gap-10 border-b border-border pb-16 md:flex-row md:items-end"><div><p className="text-xs font-semibold uppercase text-earth">Contact</p><h2 className="mt-4 text-4xl text-foreground sm:text-5xl">{brandName}</h2><p className="mt-3 font-light text-muted-foreground">Fresh milk, straight from our farm to your home.</p></div><div className="text-sm leading-7 text-muted-foreground"><p>Phone / WhatsApp: <span className="text-foreground">[placeholder]</span></p><p>Address: <span className="text-foreground">[placeholder]</span></p><a href="#book-milk" className="nav-underline mt-4 inline-block font-medium text-primary">Book Milk →</a></div></div></section>;
