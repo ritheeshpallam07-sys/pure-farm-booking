@@ -248,52 +248,209 @@ function Field({ label, id, children }: { label: string; id: string; children: R
 
 type Gps = { latitude: number; longitude: number; accuracy: number | null };
 
-function AddressField({ value, onChange, onGps }: { value: string; onChange: (value: string) => void; onGps: (gps: Gps) => void }) {
+function AddressField({
+  value,
+  onChange,
+  onGps,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  onGps: (gps: Gps) => void;
+}) {
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [lowAccuracy, setLowAccuracy] = useState(false);
   const [approx, setApprox] = useState("");
+  const [gpsInfo, setGpsInfo] = useState<Gps | null>(null);
+
   const valueRef = useRef(value);
   valueRef.current = value;
+
   const locate = () => {
-    if (!("geolocation" in navigator)) { setStatus("error"); return; }
-    setStatus("loading"); setLowAccuracy(false); setApprox("");
-    // One-time read only when the customer taps the pin — no tracking.
+    if (!("geolocation" in navigator)) {
+      setStatus("error");
+      return;
+    }
+
+    setStatus("loading");
+    setLowAccuracy(false);
+    setApprox("");
+    setGpsInfo(null);
+
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
-        const accuracy = Number.isFinite(coords.accuracy) ? coords.accuracy : null;
-        onGps({ latitude: coords.latitude, longitude: coords.longitude, accuracy });
+        const accuracy = Number.isFinite(coords.accuracy)
+          ? coords.accuracy
+          : null;
+
+        const currentGps = {
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          accuracy,
+        };
+
+        onGps(currentGps);
+        setGpsInfo(currentGps);
+
         setLowAccuracy(accuracy !== null && accuracy > 50);
         setStatus("done");
+
         try {
-          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}&zoom=16`, { headers: { Accept: "application/json" } });
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}&zoom=16`,
+            {
+              headers: {
+                Accept: "application/json",
+              },
+            }
+          );
+
           if (!response.ok) return;
+
           const data: { display_name?: string } = await response.json();
+
           if (!data.display_name) return;
+
           setApprox(data.display_name);
-          // Only a starting point: fill an empty box, never replace what the customer typed.
-          if (!valueRef.current.trim()) onChange(`House / Door No: \nColony / Street: \nLandmark: \n(Approximate area: ${data.display_name})`);
-        } catch { /* suggestion is optional */ }
+
+          if (!valueRef.current.trim()) {
+            onChange(
+              `House / Door No: 
+Colony / Street: 
+Landmark: 
+(Approximate area: ${data.display_name})`
+            );
+          }
+        } catch {
+          // Address suggestion is optional.
+        }
       },
-      () => setStatus("error"),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 },
+      (error) => {
+        console.error("Geolocation error:", error);
+        setStatus("error");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 0,
+      }
     );
   };
+
   return (
     <div className="sm:col-span-2">
-      <label htmlFor="address" className="mb-2 block text-xs font-semibold uppercase text-earth">Delivery Address</label>
+      <label
+        htmlFor="address"
+        className="mb-2 block text-xs font-semibold uppercase text-earth"
+      >
+        Delivery Address
+      </label>
+
       <div className="relative">
-        <textarea id="address" name="address" rows={4} required value={value} onChange={(e) => onChange(e.target.value)} placeholder={"Enter your delivery address\nHouse no., colony/street, landmark, town, PIN"} className="form-control resize-y pr-14" />
-        <button type="button" onClick={locate} disabled={status === "loading"} aria-label="Use my current location" title="Use my current location" className="absolute right-2 top-2 flex h-10 w-10 items-center justify-center rounded-full border border-sage bg-paper text-lg transition duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm active:translate-y-0 disabled:opacity-60">
-          <span aria-hidden="true" className={status === "loading" ? "opacity-50" : ""}>📍</span>
+        <textarea
+          id="address"
+          name="address"
+          rows={4}
+          required
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={
+            "Enter your delivery address\nHouse no., colony/street, landmark, town, PIN"
+          }
+          className="form-control resize-y pr-14"
+        />
+
+        <button
+          type="button"
+          onClick={locate}
+          disabled={status === "loading"}
+          aria-label="Use my current location"
+          title="Use my current location"
+          className="absolute right-2 top-2 flex h-10 w-10 items-center justify-center rounded-full border border-sage bg-paper text-lg transition duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm active:translate-y-0 disabled:opacity-60"
+        >
+          <span
+            aria-hidden="true"
+            className={status === "loading" ? "opacity-50" : ""}
+          >
+            📍
+          </span>
         </button>
       </div>
-      <p className="mt-2 text-sm text-muted-foreground">Can't find your exact house? Enter your house number, colony/street and a nearby landmark.</p>
+
+      <p className="mt-2 text-sm text-muted-foreground">
+        Can't find your exact house? Enter your house number, colony/street and
+        a nearby landmark.
+      </p>
+
       <div aria-live="polite">
-        {status === "loading" && <p className="mt-1 text-sm text-muted-foreground">Finding your location…</p>}
-        {status === "done" && <p className="mt-1 text-sm font-medium text-primary">✓ Location captured</p>}
-        {status === "done" && approx && <p className="mt-1 text-sm text-muted-foreground"><span className="font-medium text-foreground">Approximate location:</span> {approx}</p>}
-        {lowAccuracy && <p className="mt-1 text-sm text-earth">Location accuracy is low. Please check your address before booking.</p>}
-        {status === "error" && <p className="mt-1 text-sm text-earth">Location wasn't detected. Please enter your delivery address manually.</p>}
+        {status === "loading" && (
+          <p className="mt-1 text-sm text-muted-foreground">
+            Finding your location…
+          </p>
+        )}
+
+        {status === "done" && (
+          <p className="mt-1 text-sm font-medium text-primary">
+            ✓ Location captured
+          </p>
+        )}
+
+        {status === "done" && gpsInfo && (
+          <div className="mt-2 rounded-lg border border-border bg-background p-3 text-xs text-muted-foreground">
+            <p>
+              <span className="font-medium text-foreground">
+                GPS latitude:
+              </span>{" "}
+              {gpsInfo.latitude.toFixed(6)}
+            </p>
+
+            <p>
+              <span className="font-medium text-foreground">
+                GPS longitude:
+              </span>{" "}
+              {gpsInfo.longitude.toFixed(6)}
+            </p>
+
+            <p>
+              <span className="font-medium text-foreground">
+                GPS accuracy:
+              </span>{" "}
+              {gpsInfo.accuracy !== null
+                ? `${Math.round(gpsInfo.accuracy)} m`
+                : "unknown"}
+            </p>
+
+            <a
+              href={`https://www.google.com/maps?q=${gpsInfo.latitude},${gpsInfo.longitude}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-2 inline-block font-medium text-primary underline underline-offset-2"
+            >
+              Open GPS location in Google Maps
+            </a>
+          </div>
+        )}
+
+        {status === "done" && approx && (
+          <p className="mt-1 text-sm text-muted-foreground">
+            <span className="font-medium text-foreground">
+              Approximate location:
+            </span>{" "}
+            {approx}
+          </p>
+        )}
+
+        {lowAccuracy && (
+          <p className="mt-1 text-sm text-earth">
+            Location accuracy is low. Please check your address before booking.
+          </p>
+        )}
+
+        {status === "error" && (
+          <p className="mt-1 text-sm text-earth">
+            Location wasn't detected. Please enter your delivery address
+            manually.
+          </p>
+        )}
       </div>
     </div>
   );
