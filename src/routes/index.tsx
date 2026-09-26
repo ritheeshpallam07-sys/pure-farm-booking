@@ -206,7 +206,6 @@ function BookingSection() {
   const [submitError, setSubmitError] = useState("");
   const [formData, setFormData] = useState({ name: "", phone: "", address: "", quantity: "", time: "", message: "" });
   const [gps, setGps] = useState<Gps | null>(null);
-  const addressEdited = useRef(false);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     setFormData((previous) => ({ ...previous, [name]: value }));
@@ -220,7 +219,7 @@ function BookingSection() {
     if (error) { setSubmitError("We couldn't save your booking. Please try again."); return; }
     setSubmitted(true);
   };
-  const handleReset = () => { setFormData({ name: "", phone: "", address: "", quantity: "", time: "", message: "" }); setGps(null); addressEdited.current = false; setSubmitted(false); };
+  const handleReset = () => { setFormData({ name: "", phone: "", address: "", quantity: "", time: "", message: "" }); setGps(null); setSubmitted(false); };
   return (
     <section id="book-milk" className="reveal-once paper-texture relative bg-cream-dark px-5 py-24 sm:px-8 sm:py-32">
       <LeafSprig className="absolute -right-7 top-16 h-36 w-36 -rotate-12 text-primary/15" />
