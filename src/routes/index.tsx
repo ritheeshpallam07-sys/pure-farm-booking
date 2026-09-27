@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ComponentType, type SVGProps } from "react";
-import farmHero from "@/assets/farm-hero.jpg.asset.json";
+import farmHero from "@/assets/cow-new.jpg";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
