@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type ComponentType, type SVGProps } from "react";
+import { useEffect, useState, type ComponentType, type SVGProps } from "react";
 import farmHero from "@/assets/cow-new.jpg";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -93,7 +93,7 @@ function Header({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOpen: (op
 function HeroSection() {
   return (
     <section className="relative min-h-[92svh] overflow-hidden bg-foreground">
-      <img src={farmHero.url} alt="Healthy cows in a peaceful green dairy farm at sunrise" width={1536} height={1024} loading="eager" className="hero-image-settle absolute inset-0 h-full w-full object-cover object-[61%_center] transition-transform duration-[1800ms] ease-out hover:scale-[1.012] sm:object-center" />
+      <img src={farmHero} alt="Healthy cows in a peaceful green dairy farm at sunrise" width={1536} height={1024} loading="eager" className="hero-image-settle absolute inset-0 h-full w-full object-cover object-[61%_center] transition-transform duration-[1800ms] ease-out hover:scale-[1.012] sm:object-center" />
       <div className="absolute inset-0 bg-foreground/45" />
       <div className="relative mx-auto flex min-h-[92svh] max-w-7xl items-end px-5 pb-16 pt-28 sm:px-8 sm:pb-20 lg:px-12 lg:pb-24">
         <div className="max-w-3xl text-primary-foreground">
@@ -147,7 +147,7 @@ function AboutSection() {
           <p className="mt-7 max-w-md text-lg font-light leading-relaxed text-muted-foreground">Fresh milk from our cows, handled with care and delivered to your home.</p>
         </div>
         <div className="reveal-item relative lg:col-span-7 lg:pl-12">
-          <div className="aspect-[4/3] overflow-hidden rounded-[45%_45%_0.5rem_0.5rem]"><img src={farmHero.url} alt="Cow standing beside a rural dairy shed" width={1536} height={1024} loading="lazy" className="h-full w-full object-cover object-[73%_center] transition-transform duration-700 hover:scale-[1.015]" /></div>
+          <div className="aspect-[4/3] overflow-hidden rounded-[45%_45%_0.5rem_0.5rem]"><img src={farmHero} alt="Cow standing beside a rural dairy shed" width={1536} height={1024} loading="lazy" className="h-full w-full object-cover object-[73%_center] transition-transform duration-700 hover:scale-[1.015]" /></div>
           <div className="absolute -bottom-8 left-0 max-w-[15rem] border border-border bg-paper p-5 shadow-md lg:left-0"><BottleIcon className="h-7 w-7 text-primary" /><p className="mt-3 font-display text-xl">From pasture to doorstep.</p></div>
         </div>
       </div>
@@ -262,8 +262,6 @@ function AddressField({
   const [approx, setApprox] = useState("");
   const [gpsInfo, setGpsInfo] = useState<Gps | null>(null);
 
-  const valueRef = useRef(value);
-  valueRef.current = value;
 
   const locate = () => {
     if (!("geolocation" in navigator)) {
@@ -311,15 +309,6 @@ function AddressField({
           if (!data.display_name) return;
 
           setApprox(data.display_name);
-
-          if (!valueRef.current.trim()) {
-            onChange(
-              `House / Door No: 
-Colony / Street: 
-Landmark: 
-(Approximate area: ${data.display_name})`
-            );
-          }
         } catch {
           // Address suggestion is optional.
         }
