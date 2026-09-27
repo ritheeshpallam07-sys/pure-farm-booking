@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type ComponentType, type SVGProps } from "react";
+import { useEffect, useState, type ComponentType, type SVGProps } from "react";
 import farmHero from "@/assets/cow-new.jpg";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -262,8 +262,6 @@ function AddressField({
   const [approx, setApprox] = useState("");
   const [gpsInfo, setGpsInfo] = useState<Gps | null>(null);
 
-  const valueRef = useRef(value);
-  valueRef.current = value;
 
   const locate = () => {
     if (!("geolocation" in navigator)) {
@@ -311,15 +309,6 @@ function AddressField({
           if (!data.display_name) return;
 
           setApprox(data.display_name);
-
-          if (!valueRef.current.trim()) {
-            onChange(
-              `House / Door No: 
-Colony / Street: 
-Landmark: 
-(Approximate area: ${data.display_name})`
-            );
-          }
         } catch {
           // Address suggestion is optional.
         }
